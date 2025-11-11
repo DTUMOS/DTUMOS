@@ -1,0 +1,117 @@
+# -----------------------------
+# Python 기본
+# -----------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# -----------------------------
+# 가상환경 / 환경폴더
+# -----------------------------
+.venv/
+venv/
+ENV/
+env/
+.Python
+
+# -----------------------------
+# IDE / 편집기
+# -----------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# -----------------------------
+# OS별 불필요 파일
+# -----------------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# 로그 / 캐시
+# -----------------------------
+*.log
+*.out
+*.tmp
+*.cache/
+.ipynb_checkpoints/
+
+# -----------------------------
+# 환경설정 / 보안
+# -----------------------------
+.env
+.env.local
+.env.*.local
+secrets.json
+*env*
+*/.env
+**/.env
+
+# -----------------------------
+# 시뮬레이션 결과물 (실행 출력)
+# -----------------------------
+*.json
+*.parquet
+*.xlsx
+
+# -----------------------------
+# Node.js
+# -----------------------------
+node_modules/
+
+# -----------------------------
+# 원시 데이터 (raw data 전체 무시)
+# -----------------------------
+raw_data/
+
+# -----------------------------
+# 대용량 파일 확장자 (모델/압축/원시데이터 등)
+# -----------------------------
+*.csv
+*.tsv
+*.zip
+*.tar
+*.gz
+*.pkl
+
+# -----------------------------
+# 생성된 대시보드 figure (자동 산출물)
+# -----------------------------
+visualization/dashboard/assets/figure/
+
+# -----------------------------
+# 특정 대용량 데이터 무시
+# -----------------------------
+data/etc/HangJeongDong_ver20230701.geojson
+
+data/etc/FZI_POI_20230627.geojson
+web_interface/
+configs/
+# simul_result 안의 내용은 기본 무시(디렉터리 자체는 추적)
+simul_result/*
+
+# simul_result 폴더 자체는 유지
+!simul_result/.gitkeep
+
+# scenario_base 폴더는 보이게
+!simul_result/scenario_base/
+
+# 하지만 scenario_base 내부 파일은 기본 무시
+simul_result/scenario_base/*
+
+# 폴더 유지를 위한 .gitkeep만 허용
+!simul_result/scenario_base/.gitkeep
+
+
+# html 폴더 안의 모든 파일 무시(폴더만 유지)
+visualization/dashboard/assets/html/*
+
+# 폴더 표시용 .gitkeep만 허용
+!visualization/dashboard/assets/html/.gitkeep

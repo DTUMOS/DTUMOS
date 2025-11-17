@@ -60,7 +60,7 @@ def build_vehicle_schedule(n_total, start_min, end_min, use_shift=False):
     if use_shift:
         splits = adaptive_shift_patterns(start_min, end_min)
         df = build_rows(0, n_total, splits)
-        print(f"[ShiftMode] 교대패턴 적용됨: {splits}")
+        print(f"[ShiftMode] Automatic vehicle shift scheduling applied.")
     else:
         df = pd.DataFrame({
             "vehicle_id": range(n_total),
@@ -68,7 +68,7 @@ def build_vehicle_schedule(n_total, start_min, end_min, use_shift=False):
             "work_end": end_min,
             "temporary_stopTime": 0
         })
-        print("[SimpleMode] 전 차량 동일 근무 시간 적용")
+        print("[SimpleMode] Uniform working schedule applied to all vehicles.")
     return df
 
 
@@ -173,10 +173,10 @@ def assign_osm_points(vehicle_df, sgn_union=None, use_osm_vehicle=False, count=N
     Polygon 기반 네트워크가 없을 경우 즉시 에러 발생 (fallback 없음).
     """
     if not use_osm_vehicle:
-        raise ValueError("[Error] use_osm_vehicle=False 상태에서는 assign_osm_points()를 호출할 수 없습니다.")
+        raise ValueError("[Error] use_osm_vehicle=False state is not allowed to call assign_osm_points().")
     
     if sgn_union is None:
-        raise ValueError("[Error] sgn_union(도시 경계)가 제공되지 않았습니다. GeoJSON 경계 데이터를 전달하세요.")
+        raise ValueError("[Error] sgn_union(city boundary) is not provided. Please provide the GeoJSON boundary data.")
 
     pg = point_generator_with_OSM()
 
@@ -188,12 +188,12 @@ def assign_osm_points(vehicle_df, sgn_union=None, use_osm_vehicle=False, count=N
         nodes = pg.generate_point(edges, count or len(vehicle_df))
     except Exception as e:
         # fallback 없음: 즉시 강제 중단
-        raise RuntimeError(f"[OSM Error] Polygon 기반 도로망 로드 실패: {e}")
+        raise RuntimeError(f"[OSM Error] Failed to load road network based on polygon: {e}")
 
     # 결과 반영
     vehicle_df["lat"] = nodes["lat"]
     vehicle_df["lon"] = nodes["lon"]
-    print(f"[OSM] 차량 초기위치 {len(vehicle_df)}개 도로망 기반 생성 완료.")
+    print(f"[OSM] Generated {len(vehicle_df)} initial vehicle positions using the road network.")
 
     return vehicle_df
 
@@ -217,7 +217,6 @@ def save_vehicle_data(vehicle_df, output_dir):
     os.makedirs(f"{output_dir}/vehicle", exist_ok=True)
     path = f"{output_dir}/vehicle/vehicle_data.csv"
     vehicle_df.to_csv(path, index=False)
-    print(f"[Saved] vehicle_data.csv → {path}")
     return path
 
 
@@ -239,7 +238,6 @@ def preprocess_vehicles(
     if seed is not None:
         random.seed(seed)
         np.random.seed(seed)
-        print(f"[Seed] Random seed fixed at {seed}")
 
     # 2. build vehicle schedule
     vehicle_df = build_vehicle_schedule(n_total, start_min, end_min, use_shift)

@@ -245,7 +245,7 @@ def sync_to_npm(simul_configs):
     with open(config_path, 'w', encoding='utf-8') as f:
         json.dump(config_data, f, ensure_ascii=False, indent=2)
 
-    print(f"[Sync] Simulation config saved → {config_path}")
+    print(f"- Configuration saved → {config_path}")
 
 # Generate HTML and JS files for specific simulation
 def generate_html_js_files(simulation_name):

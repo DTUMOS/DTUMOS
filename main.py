@@ -48,8 +48,9 @@ USE_SHIFT = True # 교대 근무 비율 기반 (현실형) # False 단순형·�
 RANDOM_SEED = 42 # 난수 시드 (택시 데이터 재현성 제어)
 
 DASHBOARD_TEMPLATE = "./visualization/dashboard/index_simulation_base.html"
-print("\n" + "=" * 40)
-print("Seongnam Taxi Simulation System")
+print("=" * 40)
+print("       Seongnam Taxi Simulation")
+print("=" * 40)
 
 passenger_df, sgn_union = preprocess_passengers(
     raw_data_path=RAW_DATA_PATH,
@@ -92,10 +93,11 @@ vehicles   = pd.read_csv('./data/agents/vehicle/vehicle_data.csv')
 
 if NUM_TAXIS and NUM_TAXIS < len(vehicles):
         vehicles = vehicles.head(NUM_TAXIS).reset_index(drop=True)
-        print(f"[Setting] Vehicles = {NUM_TAXIS}, Time = {TIME_RANGE_START//60:02d}:00~{TIME_RANGE_END//60:02d}:00")
 
-else :
-        print("[Setting] Vehicles = {NUM_TAXIS}, Time = {TIME_RANGE_START//60:02d}:00~{TIME_RANGE_END//60:02d}:00")
+print("\n[CONFIG]")
+print(f"- Vehicles: {len(vehicles)}")
+print(f"- Time Range: {TIME_RANGE_START//60:02d}:00 ~ {TIME_RANGE_END//60:02d}:00")
+
 passengers, vehicles = get_preprocessed_data(passengers, vehicles, simul_configs)
 
 # =========== SIMULATION ===========
@@ -118,7 +120,8 @@ result.to_json(os.path.join(save_path, 'result.json'), orient='records')
 # =========== DASHBOARD ===========
 
 simulation_name = os.path.basename(simul_configs['save_path'])
-print(f"Simulation name: {simulation_name}")
+print("\n[POSTPROCESS]")
+print(f"- Simulation name: {simulation_name}")
 
 # Dashboard configuration   (dashboard_config is in modules/analytics/dashboard.py)
 
@@ -143,7 +146,7 @@ generate_html_js_files(simulation_name)
 sync_to_npm(simul_configs)
 
 
-print("\n Result:")
+print("\n[RESULT]")
 print(f"→ Dashboard: open ./visualization/dashboard/assets/html/index_{simulation_name}.html")
 print("→ npm run : cd visualization/simulation && npm run dev")
 print("=" * 40)

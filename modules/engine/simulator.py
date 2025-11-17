@@ -1,3 +1,4 @@
+from typing import NoReturn
 import pandas as pd 
 from tqdm import tqdm
 
@@ -71,12 +72,55 @@ class Simulator:
     # Main simulation execution
     def run(self):
         start_time, end_time = self.configs['time_range'][0], self.configs['time_range'][1]
-        print(f"[Data]  passengers={len(self.passengers)} load completed")
+        print(f"- Passengers: {len(self.passengers)}")
+        print("\n[SIMULATION]")
+        print("Running simulation...")
         
-        with tqdm(total=end_time-start_time, 
-                  desc="시뮬레이션", 
-                  unit="분",
-                  ncols=80) as pbar:
+        with tqdm(total=end_time - start_time, desc="simulation", unit="minutes") as pbar:
+            for time in range(start_time, end_time):
+
+                # 중간 출력이 필요하면 print() 대신:
+                # tqdm.write(f"[DEBUG] {time=}")
+
+                # passenger 업데이트
+                self.requested_passenger, self.fail_passenger, self.passengers = update_passenger(
+                    self.requested_passenger,
+                    self.fail_passenger,
+                    self.passengers,
+                    self.configs,
+                    time
+                )
+
+                # vehicle 업데이트
+                self.active_vehicle, self.empty_vehicle, self.vehicles = update_vehicle(
+                    self.active_vehicle,
+                    self.empty_vehicle,
+                    self.vehicles,
+                    self.configs,
+                    time
+                )
+
+                # dispatch
+                if len(self.requested_passenger) > 0 and len(self.empty_vehicle) > 0:
+                    self.requested_passenger, self.active_vehicle, self.empty_vehicle = self.dispatch_main(
+                        self.requested_passenger,
+                        self.active_vehicle,
+                        self.empty_vehicle,
+                        self.configs,
+                        time
+                    )
+
+                # record
+                self.simulation_record = checking_progress(
+                    self.simulation_record, time,
+                    self.requested_passenger,
+                    self.fail_passenger,
+                    self.empty_vehicle,
+                    self.active_vehicle,
+                    self.configs
+                )
+
+                pbar.update(1)   
 
             for time in range(start_time, end_time):
                 # Update passenger status (new requests, failures)

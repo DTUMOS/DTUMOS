@@ -36,9 +36,6 @@ def filter_valid_coordinates(df: pd.DataFrame) -> pd.DataFrame:
 def filter_within_boundary(df: pd.DataFrame, boundary_path: str):
     sgn = gpd.read_file(boundary_path)
     sgn_union = unary_union(sgn.geometry.values)
-    print(f"[DEBUG] sgn_union 생성 완료 — 타입: {type(sgn_union)}")
-    print(f"[DEBUG] 경계 도형 개수: {len(sgn)}")
-    print(f"[DEBUG] CRS: {sgn.crs}")
     pickup_gdf = gpd.GeoDataFrame(
         df,
         geometry=gpd.points_from_xy(df["승차X좌표"], df["승차Y좌표"]),
@@ -65,6 +62,7 @@ def filter_by_time_range(df: pd.DataFrame, base_date: str, start_min: int, end_m
 
     # inclusive="left" keeps times >= start_dt and < end_dt
     filtered = df.loc[df["승차시간"].between(start_dt, end_dt, inclusive="left")].copy()
+    print("\n[PREPROCESS]")
     print(f"[Time filter] {start_dt} ~ {end_dt} -> {len(filtered)} rows")
     return filtered
 
@@ -113,30 +111,22 @@ def preprocess_passengers(
       passenger_df (pd.DataFrame),
       sgn_union (shapely.geometry)  -- so caller can reuse boundary for vehicle preprocessing
     """
-    print("[passenger_preprocessor] Loading raw data...")
     df = load_raw_data(raw_data_path)
 
-    print("[passenger_preprocessor] Filtering invalid coordinates...")
     df = filter_valid_coordinates(df)
 
-    print("[passenger_preprocessor] Filtering by Seongnam boundary...")
     df, sgn_union = filter_within_boundary(df, boundary_path)
 
-    print("[passenger_preprocessor] Filtering by time range...")
     df = filter_by_time_range(df, base_date, start_min, end_min)
 
-    print("[passenger_preprocessor] Computing ride_time...")
     df = compute_ride_time(df, base_date)
 
-    print("[passenger_preprocessor] Mapping taxi type...")
     df = map_taxi_type_column(df)
 
-    print("[passenger_preprocessor] Building passenger dataframe...")
     passenger_df = build_passenger_dataframe(df)
 
     os.makedirs(f"{output_dir}/passenger", exist_ok=True)
     passenger_path = f"{output_dir}/passenger/passenger_data.csv"
     passenger_df.to_csv(passenger_path, index=False)
-    print(f"[passenger_preprocessor] Saved → {passenger_path}")
 
     return passenger_df, sgn_union

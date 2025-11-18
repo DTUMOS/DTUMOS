@@ -34,9 +34,8 @@ from modules.analytics.dashboard import generate_html_js_files
 from modules.analytics.dashboard import sync_to_npm
 # =========== CONFIGURATION ===========
 
-RAW_DATA_PATH = "data/etc/Seongnam_Taxi_April.csv"
+RAW_DATA_PATH = "data/etc/Seongnam_Taxi_20240418.csv"
 BOUNDARY_PATH = "data/etc/seongnam_boundary.geojson"
-
 
 BASE_DATE = "2024-04-18"
 TIME_RANGE_START = 1080 

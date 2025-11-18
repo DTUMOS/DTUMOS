@@ -1,8 +1,8 @@
-# DTUMOS (Dynamic Taxi-based Urban Mobility Operation System)
+# DTUMOS (Digital Twin for Large-scale Urban Mobility Operating System)
 
-**Seongnam Taxi Simulation System**
+**Urban Mobility Simulation and Optimization System**
 
-DTUMOS is a comprehensive taxi operation simulation and optimization system for Seongnam City, Gyeonggi Province, South Korea. The system optimizes passenger-vehicle matching based on real taxi data and provides visualization and analysis of simulation results.
+DTUMOS is a comprehensive digital twin system for simulating and optimizing large-scale urban mobility operations. The system provides advanced passenger-vehicle matching optimization based on real operational data, along with powerful visualization and analysis capabilities for simulation results.
 
 ---
 
@@ -25,25 +25,28 @@ DTUMOS is a comprehensive taxi operation simulation and optimization system for 
 ## 🚀 Key Features
 
 ### 1. **Data Preprocessing**
-- Process real taxi operation data
-- Filter data within Seongnam city boundaries
-- Normalize passenger and vehicle data
+- Process real operational data from urban mobility systems
+- Filter data within defined geographic boundaries
+- Normalize passenger and vehicle data for simulation
 
 ### 2. **Vehicle Simulation**
-- Configurable number of taxis
+- Configurable fleet size
 - Shift-based work schedule simulation
 - Time-based operation pattern reproduction
+- Realistic vehicle behavior modeling
 
 ### 3. **Optimized Dispatch**
 - Optimal dispatch algorithm using OR-Tools
 - Cost matrix-based passenger-vehicle matching
 - MIP (Mixed Integer Programming) based optimization
+- Scalable to large-scale urban environments
 
 ### 4. **Result Visualization**
 - Interactive dashboard generation
 - Time-series operation status charts
 - Map-based spatial analysis
-- Vehicle operation efficiency analysis
+- Fleet operation efficiency analysis
+- Real-time performance monitoring
 
 ---
 
@@ -54,9 +57,9 @@ DTUMOS/
 ├── main.py                          # Main execution script
 ├── requirements.txt                 # Python package dependencies
 ├── data/                           # Data directory
-│   ├── etc/                        # Raw data
-│   │   ├── Seongnam_Taxi_20240418.csv
-│   │   └── seongnam_boundary.geojson
+│   ├── etc/                        # Raw data files
+│   │   ├── Seongnam_Taxi_20240418.csv  # Example dataset
+│   │   └── seongnam_boundary.geojson   # Example boundary file
 │   └── agents/                     # Preprocessed agent data
 │       ├── passenger/              # Passenger data
 │       └── vehicle/                # Vehicle data
@@ -129,14 +132,15 @@ BASE_DATE = "2024-04-18"              # Simulation date
 TIME_RANGE_START = 1080               # Start time in minutes (18:00)
 TIME_RANGE_END = 1260                 # End time in minutes (21:00)
 
-# Vehicle Configuration
-NUM_TAXIS = 950                       # Number of taxis in simulation
+# Fleet Configuration
+NUM_TAXIS = 950                       # Number of vehicles in simulation
 USE_SHIFT = True                      # Enable shift-based scheduling
 RANDOM_SEED = 42                      # Random seed for reproducibility
 
 # Simulation Configuration
 base_configs['dispatch_mode'] = 'in_order'  # Dispatch mode
 base_configs['matrix_mode'] = 'haversine_distance'  # Distance calculation method
+base_configs['target_region'] = 'Your City, Country'  # Target region
 ```
 
 ---
@@ -144,18 +148,19 @@ base_configs['matrix_mode'] = 'haversine_distance'  # Distance calculation metho
 ## ⚙️ Configuration Options
 
 ### Dispatch Mode
-- `in_order`: Sequential dispatch
+- `in_order`: Sequential dispatch (FIFO-based)
 - `optimization`: Optimization-based dispatch using OR-Tools
 
 ### Matrix Mode (Distance Calculation)
 - `haversine_distance`: Straight-line distance using Haversine formula
-- `osrm`: Actual road distance using OSRM
+- `osrm`: Actual road distance using OSRM (Open Source Routing Machine)
 
 ### Time Configuration
-- Time is specified in **minutes**
+- Time is specified in **minutes from midnight**
 - Examples:
   - `1080` = 18:00 (6:00 PM)
   - `1260` = 21:00 (9:00 PM)
+  - `0` = 00:00 (midnight)
 
 ---
 
@@ -170,35 +175,37 @@ base_configs['matrix_mode'] = 'haversine_distance'  # Distance calculation metho
 - Data filtering within regional boundaries
 - Time-based data cropping
 - Shift schedule generation
+- Data validation and normalization
 
 ### 2. **Engine Module**
-- `simulator.py`: Main simulation logic
+- `simulator.py`: Main simulation logic and orchestration
 - `config_manager.py`: Configuration management and validation
 - `state_updater.py`: Passenger/vehicle state updates
 - `io_manager.py`: Result saving and loading
 
 **Simulation Process:**
-1. Initial data loading
+1. Initial data loading and validation
 2. Time-step based iterative simulation
 3. Passenger request processing
 4. Vehicle dispatch and state updates
-5. Result recording and saving
+5. Result recording and persistent storage
 
 ### 3. **Dispatch Module**
 - `dispatch_algorithms.py`: OR-Tools based optimization
 - `cost_matrix.py`: Passenger-vehicle cost matrix calculation
-- `dispatch_flow.py`: Dispatch flow control
+- `dispatch_flow.py`: Dispatch flow control and coordination
 
 **Optimization Algorithm:**
 - MIP (Mixed Integer Programming) based
 - Cost minimization objective function
 - Constraints:
-  - Each vehicle is assigned at most 1 passenger
+  - Each vehicle is assigned at most 1 passenger at a time
   - Each passenger is assigned exactly 1 vehicle
+- Scalable for large-scale fleet operations
 
 ### 4. **Analytics Module**
 - `dashboard.py`: Automatic dashboard generation
-- `service_charts.py`: Service metric charts
+- `service_charts.py`: Service metric charts and KPIs
 - `fleet_charts.py`: Fleet operation charts
 - `spatial_charts.py`: Map-based spatial analysis
 
@@ -207,12 +214,16 @@ base_configs['matrix_mode'] = 'haversine_distance'  # Distance calculation metho
 - Vehicle utilization rate
 - Service success/failure rate
 - Regional demand heatmap
+- Fleet distribution analysis
 
 ### 5. **Routing Module**
 - `osrm_client.py`: OSRM (Open Source Routing Machine) API client
+- Real-world road network routing
+- Distance and time estimation
 
 ### 6. **Utils Module**
 - `distance_utils.py`: Haversine distance calculation and utilities
+- Geographic coordinate processing
 
 ---
 
@@ -250,14 +261,15 @@ simul_result/
 - Python 3.8 or higher
 
 ### Key Packages
-- `pandas`: Data processing
+- `pandas`: Data processing and manipulation
 - `numpy`: Numerical computation
 - `geopandas`: Geographic data processing
-- `folium`: Map visualization
-- `plotly`: Interactive charts
-- `ortools`: Optimization algorithms
-- `osmnx`: Road network data
-- `matplotlib`: Chart generation
+- `folium`: Interactive map visualization
+- `plotly`: Interactive charts and graphs
+- `ortools`: Optimization algorithms (Google OR-Tools)
+- `osmnx`: OpenStreetMap road network data
+- `matplotlib`: Static chart generation
+- `shapely`: Geometric operations
 
 See `requirements.txt` for complete package list
 
@@ -270,20 +282,28 @@ See `requirements.txt` for complete package list
 **Objective Function:**
 ```
 Minimize: Σ cost[i,j] × x[i,j]
+          i,j
 ```
+
+Where:
+- `x[i,j]` is a binary decision variable (1 if vehicle i is assigned to passenger j, 0 otherwise)
+- `cost[i,j]` is the cost of assigning vehicle i to passenger j (distance or time)
 
 **Constraints:**
 ```
-Σ x[i,j] ≤ 1  (Each vehicle i is assigned at most 1 passenger)
+Σ x[i,j] ≤ 1  for all i  (Each vehicle is assigned at most 1 passenger)
 j
 
-Σ x[i,j] = 1  (Each passenger j is assigned exactly 1 vehicle)
+Σ x[i,j] = 1  for all j  (Each passenger is assigned exactly 1 vehicle)
 i
+
+x[i,j] ∈ {0, 1}  for all i,j
 ```
 
 **Cost Matrix:**
 - Distance or time between vehicles and passengers
 - Uses Haversine distance or OSRM route distance
+- Dynamically computed based on current vehicle positions
 
 ---
 
@@ -293,38 +313,82 @@ i
 1. Data Loading
    ↓
 2. Preprocessing (Passengers/Vehicles)
+   ├─ Load raw operational data
+   ├─ Filter by geographic boundaries
+   ├─ Normalize timestamps
+   └─ Generate vehicle schedules
    ↓
 3. Simulation Initialization
+   ├─ Initialize vehicle states
+   ├─ Load passenger requests
+   └─ Setup data structures
    ↓
-4. [Time Loop]
+4. [Time Loop] - Iterate through each time step
    ├─ Extract new passenger requests
-   ├─ Update vehicle states
+   ├─ Update vehicle states (position, availability)
    ├─ Execute dispatch algorithm
    ├─ Match passengers and vehicles
-   └─ Record results
+   ├─ Update trip records
+   └─ Record metrics
    ↓
 5. Result Analysis and Visualization
+   ├─ Calculate KPIs
+   ├─ Generate charts
+   └─ Create spatial visualizations
    ↓
 6. Dashboard Generation
+   └─ Export interactive HTML dashboard
 ```
 
 ---
 
 ## 🎯 Simulation Metrics
 
-The simulation records the following metrics:
+The simulation records the following key performance indicators:
 
-- **waiting_passenger_cnt**: Number of waiting passengers
-- **fail_passenger_cnt**: Number of passengers who failed to get a ride
-- **empty_vehicle_cnt**: Number of empty vehicles
-- **driving_vehicle_cnt**: Number of vehicles in operation
-- **iter_time(second)**: Execution time for each time step
+- **waiting_passenger_cnt**: Number of waiting passengers at each time step
+- **fail_passenger_cnt**: Cumulative number of passengers who failed to get service
+- **empty_vehicle_cnt**: Number of available/idle vehicles
+- **driving_vehicle_cnt**: Number of vehicles currently in service
+- **iter_time(second)**: Computation time for each simulation step
+
+### Additional Analysis Metrics:
+- Service success rate
+- Average waiting time
+- Vehicle utilization rate
+- Distance traveled (empty vs. occupied)
+- Demand patterns by time and location
+
+---
+
+## 🔧 Customization
+
+### Adding Custom Datasets
+
+1. Prepare your data in CSV format with required columns
+2. Update the boundary file (GeoJSON) for your target region
+3. Modify configuration in `main.py`:
+   ```python
+   RAW_DATA_PATH = "data/etc/your_data.csv"
+   BOUNDARY_PATH = "data/etc/your_boundary.geojson"
+   base_configs['target_region'] = 'Your City, Country'
+   ```
+
+### Extending Dispatch Algorithms
+
+Implement custom dispatch logic in `modules/dispatch/dispatch_algorithms.py`
 
 ---
 
 ## 🤝 Contributing
 
 Bug reports, feature suggestions, and Pull Requests are welcome!
+
+### How to Contribute:
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
 
 ---
 
@@ -336,15 +400,21 @@ Please check the repository for license information.
 
 ## 📧 Contact
 
-If you have any questions about the project, please open an issue.
+If you have any questions about the project, please open an issue on GitHub.
 
 ---
 
 ## 🙏 Acknowledgments
 
-- OSRM (Open Source Routing Machine)
-- OR-Tools (Google Optimization Tools)
-- Seongnam City Taxi Data Provider
+- **OSRM** (Open Source Routing Machine) - Routing engine
+- **OR-Tools** (Google Optimization Tools) - Optimization algorithms
+- **OpenStreetMap** - Geographic data
+
+---
+
+## 📚 Publications
+
+If you use DTUMOS in your research, please cite appropriately.
 
 ---
 
